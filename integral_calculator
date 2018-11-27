@@ -1,0 +1,55 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Nov 19 17:45:50 2018
+
+@author: robintilman
+"""
+from __future__ import division
+
+import math
+
+noma = 31391800
+e = 0.8 + noma / 10**9
+e_squared = e**2
+
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+def serie_product(formula, last_term):
+    product = 1
+    for i in range(1, last_term + 1):
+        product *= formula(i)
+    
+    return product
+    
+def wallis_product_formula(n):
+    if n >= 2:
+        return ((n - 1)/n) * wallis_product_formula(n - 2)
+    elif n == 0:
+        return math.pi/2
+    else: 
+        return 1
+
+def coefficient_derivative(n_term):
+    global e
+    return  (-1) **(n_term) * serie_product(lambda x : -2*x + 3, n_term) / ((2**n_term) * factorial(n_term))
+    
+
+def calculate_integral(precision):    
+    count = 0
+    
+    for k in range(0, precision + 1):
+        if k == 0:
+            count += math.pi/2
+        
+        else:
+            count += (coefficient_derivative(k)) * (e_squared)**k * wallis_product_formula(2*k)
+                            
+    return count
+
+print(calculate_integral(500))
+
